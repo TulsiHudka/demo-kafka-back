@@ -1,0 +1,42 @@
+{
+  "name": "nodejs-client",
+  "version": "1.0.0",
+  "description": "nodejs-client is a NodeJS http handler that makes NodeJS WebServers easier to make",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"test successful\""
+  },
+  "files": [
+    "lib/",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=10.13.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Night-Wisp/nodejs-client.git"
+  },
+  "keywords": [
+    "node",
+    "http",
+    "client",
+    "nodejs-client",
+    "WebServer",
+    "server",
+    "nodeJS"
+  ],
+  "author": "Night_Wisp (https://Night-Wisp.github.io)",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/Night-Wisp/nodejs-client/issues"
+  },
+  "homepage": "https://github.com/Night-Wisp/nodejs-client#readme",
+  "dependencies": {
+    "formidable": "^1.2.1",
+    "fs": "0.0.1-security",
+    "http": "0.0.0",
+    "url": "^0.11.0"
+  }
+}

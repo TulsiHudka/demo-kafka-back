@@ -7,6 +7,16 @@ const cors = require('cors')
 const bodyParser = require("body-parser");
 const { v4: uuidv4 } = require('uuid');
 
+//////////////////////
+
+const kafka = require('kafka-node');
+const kafkaHost = 'localhost:9092'; // Replace with the appropriate Kafka broker hostname and port
+const client = new kafka.KafkaClient({ kafkaHost });
+const producer = new Producer(client);
+
+//////////////////////
+
+
 const app = express();
 app.use(express.json());
 
@@ -35,6 +45,9 @@ io.on('connection', (socket) => {
     });
 });
 
+const processId = uuidv4();
+
+//generate api
 app.get('/request', async (req, res) => {
     try {
         console.log("heloo");
@@ -44,7 +57,6 @@ app.get('/request', async (req, res) => {
         console.log(userId)
         // console.log(typeof (userId))
 
-        const processId = uuidv4();
         console.log('Process ID:', processId);
 
         // Store the data in the database
@@ -78,6 +90,53 @@ app.get('/request', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while storing the data.' });
     }
 });
+
+
+//complete api
+
+//kafka producer
+
+// Function to send the processID to Kafka
+const Producer = kafka.Producer;
+function sendToKafka() {
+    const payloads = [
+        {
+            topic: 'java-response',
+            messages: processId,
+        },
+    ];
+
+    producer.send(payloads, (err, data) => {
+        if (err) {
+            console.error('Error sending to Kafka:', err);
+        } else {
+            console.log('Message sent to Kafka:', data);
+        }
+    });
+}
+
+
+//consumer
+
+// Function to process Kafka messages
+const consumer = new kafka.Consumer(client, [{ topic: 'java-response' }]);
+
+// Listen to Kafka messages
+consumer.on('message', async (message) => {
+    const processId = message.value;
+
+    // Retrieve the result from the database based on the processID
+    const storedRequest = await Request.findOne({ where: { processId } });
+
+    if (storedRequest && storedRequest.result) {
+        const result = storedRequest.result;
+
+        // Emit the result to the front-end using socket.emit
+        io.emit('result', result);
+    }
+});
+
+
 
 server.listen(8000, () => {
     console.log('Server is running on port 8000.');
