@@ -2,17 +2,16 @@ const express = require('express');
 const axios = require('axios');
 const http = require('http');
 const socketIO = require('socket.io');
-const Request = require('./src/models/request');
+const Async_processes = require('./src/models/async_processes');
 const cors = require('cors')
 const bodyParser = require("body-parser");
 const { v4: uuidv4 } = require('uuid');
 
 //////////////////////
 
-const kafka = require('kafka-node');
-const kafkaHost = 'localhost:9092'; // Replace with the appropriate Kafka broker hostname and port
-const client = new kafka.KafkaClient({ kafkaHost });
-const producer = new Producer(client);
+// const kafka = require('kafka-node');
+// const kafkaHost = 'localhost:9092'; // Replace with the appropriate Kafka broker hostname and port
+// const client = new kafka.KafkaClient({ kafkaHost });
 
 //////////////////////
 
@@ -45,7 +44,7 @@ io.on('connection', (socket) => {
     });
 });
 
-const processId = uuidv4();
+// const processId = uuidv4();
 
 //generate api
 app.get('/request', async (req, res) => {
@@ -57,21 +56,23 @@ app.get('/request', async (req, res) => {
         console.log(userId)
         // console.log(typeof (userId))
 
-        console.log('Process ID:', processId);
+        // console.log('Process ID:', processId);
 
         // Store the data in the database
-        const storedRequest = await Request.create({
-            userId: userId,
-            processId: processId,
-            status: 'pending'
+        const storedRequest = await Async_processes.create({
+            userId: userId
+            // processId: processId,
+            // status: 'pending'
         });
+
+        console.log(storedRequest.processId);
 
         // Make the Java API call using axios.get
         io.emit('notification', `Your data is being processed`)
         const javaApiResponse = axios.post('http://192.168.2.71:8081/delayed', {
-            processID: processId
+            processID: storedRequest.processId
         }).then((response) => {
-            console.log(response)
+            // console.log(response)
         }).catch((error) => {
             console.log(error)
         });
@@ -97,44 +98,45 @@ app.get('/request', async (req, res) => {
 //kafka producer
 
 // Function to send the processID to Kafka
-const Producer = kafka.Producer;
-function sendToKafka() {
-    const payloads = [
-        {
-            topic: 'java-response',
-            messages: processId,
-        },
-    ];
+// const Producer = kafka.Producer;
+// const producer = new Producer(client);
+// function sendToKafka() {
+//     const payloads = [
+//         {
+//             topic: 'java-response',
+//             messages: processId,
+//         },
+//     ];
 
-    producer.send(payloads, (err, data) => {
-        if (err) {
-            console.error('Error sending to Kafka:', err);
-        } else {
-            console.log('Message sent to Kafka:', data);
-        }
-    });
-}
+//     producer.send(payloads, (err, data) => {
+//         if (err) {
+//             console.error('Error sending to Kafka:', err);
+//         } else {
+//             console.log('Message sent to Kafka:', data);
+//         }
+//     });
+// }
 
 
 //consumer
 
 // Function to process Kafka messages
-const consumer = new kafka.Consumer(client, [{ topic: 'java-response' }]);
+// const consumer = new kafka.Consumer(client, [{ topic: 'java-response' }]);
 
-// Listen to Kafka messages
-consumer.on('message', async (message) => {
-    const processId = message.value;
+// // Listen to Kafka messages
+// consumer.on('message', async (message) => {
+//     const processId = message.value;
 
-    // Retrieve the result from the database based on the processID
-    const storedRequest = await Request.findOne({ where: { processId } });
+//     // Retrieve the result from the database based on the processID
+//     const storedRequest = await Async_processes.findOne({ where: { processId } });
 
-    if (storedRequest && storedRequest.result) {
-        const result = storedRequest.result;
+//     if (storedRequest && storedRequest.result) {
+//         const result = storedRequest.result;
 
-        // Emit the result to the front-end using socket.emit
-        io.emit('result', result);
-    }
-});
+//         // Emit the result to the front-end using socket.emit
+//         io.emit('result', result);
+//     }
+// });
 
 
 
