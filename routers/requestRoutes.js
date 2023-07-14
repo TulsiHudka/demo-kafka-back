@@ -3,7 +3,6 @@ const router = new express.Router()
 
 const { requests } = require("../controller/requestController")
 
-router.get("/request", requests)
-
+router.post("/request", requests)
 
 module.exports = router

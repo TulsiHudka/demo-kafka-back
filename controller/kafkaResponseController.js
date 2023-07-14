@@ -1,30 +1,28 @@
-const Async_processes = require('../src/models/async_processes');
-const axios = require('axios');
-const { v4: uuidv4 } = require('uuid');
-// const io = require('../app');
-// const socketPort = 4000;
-// require('../socket')
+const { handleKafkaResponse } = require('../services/kafkaResponseService');
+// const infoLogger = require("../logs/infoLogger");
+const errorLogger = require("../logs/errorLogger");
+const debugLogger = require("../logs/debugLogger");
+const Constants = require('../constants');
+
 const kafkaResponse = async (req, res) => {
     try {
-        const process_id = req.headers.process_id;
-
-        //Retrieve the response from the database based on the processID
-        const checkDB = await Async_processes.findOne({ where: { process_id } });
-
-        if (checkDB && checkDB.response) {
-            const response = checkDB.response;
-
-            // Emit the response to the front-end using socket.emit
-            global.io.emit('response', response);
-        }
-        await checkDB.update({ status: 'completed' });
-
-        res.sendStatus(200);
+        debugLogger.debug({
+            origin: "kafkaResponseController",
+            function: "kafkaResponse",
+            message: Constants.message.requestStatus
+        })
+        await handleKafkaResponse(req, res);
     } catch (error) {
-        console.error('Error storing data:', error);
-        res.status(500).json({ error: 'An error occurred while storing the data.' });
+        errorLogger.error({
+            // error: error,
+            origin: "kafkaResponseController",
+            function: "kafkaResponse",
+            message: Constants.message.serverError,
+            message: Constants.message.serverError
+        })
+        // console.error('Error handling Kafka response:', error);
+        res.status(500).json({ error: 'An error occurred while handling the Kafka response.' });
     }
+};
 
-}
-
-module.exports = { kafkaResponse }
+module.exports = { kafkaResponse };

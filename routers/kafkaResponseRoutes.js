@@ -5,5 +5,4 @@ const { kafkaResponse } = require("../controller/kafkaResponseController")
 
 router.post("/Response", kafkaResponse)
 
-
 module.exports = router

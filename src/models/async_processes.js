@@ -1,5 +1,4 @@
-const { DataTypes, Sequelize, UUIDV4 } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
+const { DataTypes } = require('sequelize');
 const sequelize = require('../db/conn');
 
 const Async_processes = sequelize.define('async_processes', {
@@ -21,8 +20,8 @@ const Async_processes = sequelize.define('async_processes', {
         allowNull: true,
     },
 }, {
-    tableName: 'async_processes', // Replace 'your_table_name' with your actual table name
-    timestamps: false, // Set this to false if you don't want Sequelize to manage timestamps
+    tableName: 'async_processes',
+    timestamps: false
 });
 Async_processes.sync()
 module.exports = Async_processes;
