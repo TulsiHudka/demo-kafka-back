@@ -51,8 +51,7 @@ server.listen(port, async () => {
 
 // server.js
 // const express = require('express');
-const { sequelize } = require('./src/db/conn');
-const notifications = require('./src/models/notifications');
+const Notifications = require('./src/models/notifications');
 
 // const app = express();
 // const PORT = 3000;
@@ -63,7 +62,7 @@ const notifications = require('./src/models/notifications');
 // API routes
 app.get('/api/notifications', async (req, res) => {
     try {
-        const notifications = await Notification.findAll();
+        const notifications = await Notifications.findAll();
         res.json(notifications);
     } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -76,7 +75,7 @@ app.patch('/api/notifications/:id', async (req, res) => {
     const { status } = req.body;
 
     try {
-        const notification = await Notification.findByPk(id);
+        const notification = await Notifications.findByPk(id);
         if (!notification) {
             return res.status(404).json({ error: 'Notification not found' });
         }

@@ -1,13 +1,14 @@
 // models/Notification.js
 const { DataTypes } = require('sequelize');
+const { v4: uuidv4 } = require('uuid');
 const sequelize = require('../db/conn');
 
 const Notifications = sequelize.define('Notification', {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: () => uuidv4()
     },
     message: {
         type: DataTypes.TEXT,

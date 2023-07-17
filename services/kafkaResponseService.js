@@ -3,7 +3,8 @@ const { io } = require('../socket');
 const infoLogger = require("../logs/infoLogger");
 const errorLogger = require("../logs/errorLogger");
 const debugLogger = require("../logs/debugLogger");
-const Constants = require("../constants")
+const Constants = require("../constants");
+const Notifications = require('../src/models/notifications');
 
 const handleKafkaResponse = async (req, res) => {
     const process_id = req.body.process_id;
@@ -55,6 +56,9 @@ const handleKafkaResponse = async (req, res) => {
             status: checkDB.status,
             message: "status updated"
         })
+        const notificationCreated = await Notifications.create({
+            message: "process Completed"
+        });
         res.sendStatus(200);
         debugLogger.debug({
             origin: "kafkaResponseSevice",
