@@ -1,8 +1,14 @@
-const express = require("express")
-const router = new express.Router()
+const express = require("express");
+const router = new express.Router();
 
-const { requests } = require("../controller/requestController")
+const {
+  requests,
+  getAllNotifications,
+  updateNotificationStatus,
+} = require("../controller/requestController");
 
-router.post("/request", requests)
+router.post("/request", requests);
+router.get("/notifications", getAllNotifications);
+router.patch("/notifications/:id", updateNotificationStatus);
 
-module.exports = router
+module.exports = router;

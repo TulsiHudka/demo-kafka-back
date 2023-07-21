@@ -14,8 +14,8 @@ const Notifications = sequelize.define('Notification', {
         type: DataTypes.TEXT,
         allowNull: false,
     },
-    created_by: {
-        type: DataTypes.TEXT,
+    requested_by: {
+        type: DataTypes.UUID,
         allowNull: false,
     },
     created_at: {
