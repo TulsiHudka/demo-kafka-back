@@ -1,5 +1,6 @@
 const express = require("express");
 const router = new express.Router();
+const { storage } = require("../middleware/uploadImage");
 
 const {
   requests,
@@ -7,7 +8,7 @@ const {
   updateNotificationStatus,
 } = require("../controller/requestController");
 
-router.post("/request", requests);
+router.post("/upload", storage, requests);
 router.get("/notifications", getAllNotifications);
 router.patch("/notifications/:id", updateNotificationStatus);
 

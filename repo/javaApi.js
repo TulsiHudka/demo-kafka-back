@@ -7,13 +7,14 @@ const Constants = require("../constants");
 // const javaApi = process.env.javaApi;
 // dotenv.config();
 
-const sendJavaRequest = async (process_id) => {
+const sendJavaRequest = async (process_id, upload) => {
   try {
     console.log("request send to java");
     const response = await axios.post(
       "http://192.168.2.71:8082/JKafka/delayed",
       {
         process_id,
+        upload,
       }
     );
     infoLogger.info({

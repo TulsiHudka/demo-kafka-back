@@ -1,41 +1,45 @@
 // models/Notification.js
-const { DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
-const sequelize = require('../db/conn');
+const { DataTypes } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
+const sequelize = require("../db/conn");
 
-const Notifications = sequelize.define('Notification', {
+const Notifications = sequelize.define(
+  "Notifications",
+  {
     id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        primaryKey: true,
-        defaultValue: () => uuidv4()
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+      defaultValue: () => uuidv4(),
     },
     message: {
-        type: DataTypes.TEXT,
-        allowNull: false,
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
     requested_by: {
-        type: DataTypes.UUID,
-        allowNull: false,
+      type: DataTypes.UUID,
+      allowNull: false,
     },
     created_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
     status: {
-        type: DataTypes.ENUM('read', 'unread'),
-        allowNull: false,
-        defaultValue: 'unread',
+      type: DataTypes.ENUM("read", "unread"),
+      allowNull: false,
+      defaultValue: "unread",
     },
     updated_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
+      type: DataTypes.DATE,
+      allowNull: true,
     },
-}, {
-    tableName: 'notifications',
-    timestamps: false
-});
-Notifications.sync()
+  },
+  {
+    tableName: "notifications",
+    timestamps: false,
+  }
+);
+Notifications.sync();
 
 module.exports = Notifications;

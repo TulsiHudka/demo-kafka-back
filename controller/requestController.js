@@ -76,4 +76,8 @@ const updateNotificationStatus = async (req, res) => {
   }
 };
 
-module.exports = { requests, getAllNotifications, updateNotificationStatus };
+module.exports = {
+  requests,
+  getAllNotifications,
+  updateNotificationStatus,
+};

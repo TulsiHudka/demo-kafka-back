@@ -5,6 +5,8 @@ const errorLogger = require("../logs/errorLogger");
 const debugLogger = require("../logs/debugLogger");
 const Constants = require("../constants");
 const Notifications = require("../src/models/notifications");
+const Task = require("../src/models/tasks");
+const Document = require("../src/models/documents");
 
 const handleKafkaResponse = async (req, res) => {
   const process_id = req.body.process_id;
@@ -25,18 +27,39 @@ const handleKafkaResponse = async (req, res) => {
       function: "handleKafkaReponse",
       message: Constants.message.requestreceived,
     });
-    // console.log("hit api");
 
     // Retrieve the response from the database based on the process_id
-    const checkDB = await Async_processes.findOne({ where: { process_id } });
+    // const checkDB = await Document.findOne({ where: { process_id } });
+    // const storeResult = await Task.findOne({ where: { process_id } });
 
-    if (checkDB && checkDB.response) {
-      const response = checkDB.response;
+    // Retrieve the invoice_id from the Task table based on the provided process_id
+    const taskRecord = await Task.findOne({ where: { process_id } });
+    console.log("hit api");
+    if (taskRecord && taskRecord.invoice_id) {
+      const invoice_id = taskRecord.invoice_id;
+      console.log(invoice_id);
+      // Do something with the invoice_id if needed
+    }
+    console.log("helooo thereeeeeeeeeeeee");
+
+    if (checkDB && checkDB.result) {
+      const result = checkDB.result;
+
+      const checkedFields = [
+        { id: "4c38b76d-b921-4629-b9e4-d2bc16ca5f5e", dataField: "invoice_no" },
+        {
+          id: "4c38b76d-b921-4629-b9e4-d2bc16ca5f5e",
+          dataField: "invoice_date",
+        },
+        { id: "4c38b76d-b921-4629-b9e4-d2bc16ca5f5e", dataField: "client" },
+        { id: "4c38b76d-b921-4629-b9e4-d2bc16ca5f5e", dataField: "item_vat" },
+      ];
+
       // console.log(response);
       debugLogger.debug({
         origin: "kafkaResponseSevice",
         function: "handleKafkaReponse",
-        response: response,
+        // result: result,
       });
       // Emit the response to the front-end using socket.emit
       io.emit("response", response);
