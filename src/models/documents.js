@@ -1,8 +1,7 @@
 const { DataTypes } = require("sequelize");
-const { v4: uuidv4 } = require("uuid");
-const db = require("../db/conn");
+const { sequelize } = require("../../datasource");
 
-const Document = db.define(
+const Document = sequelize.define(
   "documents",
   {
     invoice_id: {
@@ -10,11 +9,11 @@ const Document = db.define(
       primaryKey: true,
     },
     document_name: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     document_url: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     status: {
@@ -37,17 +36,13 @@ const Document = db.define(
       allowNull: false,
     },
     tags: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: true,
     },
-    // created_at: {
-    //   type: DataTypes.DATE,
-    //   defaultValue: DataTypes.NOW,
-    // },
-    // updated_at: {
-    //   type: DataTypes.DATE,
-    //   defaultValue: DataTypes.NOW,
-    // },
+    mapped_result: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+    },
     requested_by: {
       type: DataTypes.UUID,
       allowNull: false,
@@ -55,8 +50,10 @@ const Document = db.define(
   },
   {
     tableName: "documents",
+    paranoid: true,
   }
 );
+
 Document.sync();
 
 module.exports = Document;
